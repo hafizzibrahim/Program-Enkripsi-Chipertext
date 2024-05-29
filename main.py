@@ -1,28 +1,43 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from caesar_cipher import caesar_encrypt
-from vigenere_cipher import vigenere_encrypt
+import type_cipher
 
 
 # Fungsi untuk mengenkripsi berdasarkan metode yang dipilih
 def encrypt():
-    plaintext = entry_plaintext.get()
+    plaintext = entry_plaintext.get().replace(" ", "")
     method = combobox_method.get()
 
     if method == "Caesar Cipher":
-        shift = entry_key.get()
+        shift = entry_key.get().replace(" ", "")
         if not shift.isdigit():
             messagebox.showerror("Error", "Kunci untuk Caesar Cipher harus berupa angka.")
             return
         shift = int(shift)
-        ciphertext = caesar_encrypt(plaintext, shift)
+        ciphertext = type_cipher.caesar_encrypt(plaintext, shift)
+    elif method == "Root 13 Cipher":
+        if entry_key.get():
+            messagebox.showwarning("Warning", "Root 13 Cipher tidak membutuhkan kunci. Kunci akan diabaikan.")
+        ciphertext = type_cipher.root13_encrypt(plaintext)
     elif method == "Vigenere Cipher":
-        key = entry_key.get()
+        key = entry_key.get().replace(" ", "")
         if not key.isalpha():
             messagebox.showerror("Error", "Kunci untuk Vigenere Cipher harus berupa huruf.")
             return
-        ciphertext = vigenere_encrypt(plaintext, key)
+        ciphertext = type_cipher.vigenere_encrypt(plaintext, key)
+    elif method == "Beaufort Cipher":
+        key = entry_key.get().replace(" ", "")
+        if not key.isalpha():
+            messagebox.showerror("Error", "Kunci untuk Beaufort Cipher harus berupa huruf.")
+            return
+        ciphertext = type_cipher.beaufort_encrypt(plaintext, key)
+    elif method == "Autokey Cipher":
+        key = entry_key.get().replace(" ", "")
+        if not key.isalpha():
+            messagebox.showerror("Error", "Kunci untuk Autokey Cipher harus berupa huruf.")
+            return
+        ciphertext = type_cipher.autokey_encrypt(plaintext, key)
     else:
         messagebox.showerror("Error", "Pilih metode enkripsi.")
         return
@@ -34,7 +49,7 @@ def encrypt():
 # Membuat instance dari Tkinter
 root = tk.Tk()
 root.title("Aplikasi Enkripsi Sederhana")
-root.geometry("500x450")
+root.geometry("500x500")
 root.resizable(False, False)
 
 # Menambahkan gaya
@@ -58,7 +73,7 @@ frame_method.pack(padx=20, pady=10, fill="x")
 
 label_method = ttk.Label(frame_method, text="Pilih metode:")
 label_method.pack(side="left")
-combobox_method = ttk.Combobox(frame_method, values=["Caesar Cipher", "Vigenere Cipher"], state="readonly")
+combobox_method = ttk.Combobox(frame_method, values=["Caesar Cipher", "Root 13 Cipher", "Vigenere Cipher", "Beaufort Cipher", "Autokey Cipher"], state="readonly")
 combobox_method.pack(side="left", padx=10)
 
 # Frame untuk input kunci
@@ -85,6 +100,7 @@ label_ciphertext = ttk.Label(frame_ciphertext, text="Hasil enkripsi:")
 label_ciphertext.pack(side="left")
 entry_ciphertext = ttk.Entry(frame_ciphertext, width=50)
 entry_ciphertext.pack(side="left", padx=10)
+
 
 # Menjalankan aplikasi
 root.mainloop()
