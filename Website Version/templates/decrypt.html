@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dekripsi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        p {
+            font-size: 16px;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dekripsi Teks</h1>
+        <form method="POST">
+            <label for="input_text">Masukkan teks:</label>
+            <input type="text" id="input_text" name="input_text" value="{{ request.form['input_text'] if request.form else '' }}">
+
+            <label for="method">Pilih metode:</label>
+            <select id="method" name="method">
+                <option value="">Pilih metode</option>
+                <option value="Caesar Cipher">Caesar Cipher</option>
+                <option value="Root 13 Cipher">Root 13 Cipher</option>
+                <option value="Vigenere Cipher">Vigenere Cipher</option>
+                <option value="Beaufort Cipher">Beaufort Cipher</option>
+                <option value="Autokey Cipher">Autokey Cipher</option>
+            </select>
+
+            <label for="key">Masukkan kunci:</label>
+            <input type="text" id="key" name="key" value="{{ request.form['key'] if request.form else '' }}">
+
+            <button type="submit">Proses</button>
+        </form>
+
+        {% if result %}
+        <h2>Hasil:</h2>
+        <p>{{ result }}</p>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">Kembali</a>
+        </div>
+    </div>
+</body>
+</html>
