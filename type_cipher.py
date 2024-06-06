@@ -67,12 +67,9 @@ def beaufort_encrypt(plaintext, key):
     ciphertext = ''
     for i in range(len(plaintext)):
         if plaintext[i].isalpha():
-            shift = ord(key[i % key_length]) - 65
-            if plaintext[i].isupper():
-                shift_base = ord('A')
-            else:
-                shift_base = ord('a')
-            value = (shift_base + 26 - (ord(plaintext[i]) - shift_base + shift) % 26)
+            shift = ord(key[i % key_length]) - ord('A')
+            # Perhitungan dalam Beaufort cipher
+            value = (shift + 26 - (ord(plaintext[i]) - ord('A'))) % 26 + ord('A')
             ciphertext += chr(value)
         else:
             ciphertext += plaintext[i]
@@ -81,50 +78,52 @@ def beaufort_encrypt(plaintext, key):
 def beaufort_decrypt(ciphertext, key):
     key = key.upper()
     key_length = len(key)
-    key_as_int = [ord(i) for i in key]
-    ciphertext_int = [ord(i) for i in ciphertext]
+    ciphertext = ciphertext.upper()
     plaintext = ''
-    for i in range(len(ciphertext_int)):
-        value = (key_as_int[i % key_length] - ciphertext_int[i]) % 26
-        plaintext += chr(value + 65)
-    return plaintext
+    for i in range(len(ciphertext)):
+        if ciphertext[i].isalpha():
+            shift = ord(key[i % key_length]) - ord('A')
+            value = (shift + 26 - (ord(ciphertext[i]) - ord('A'))) % 26 + ord('A')
+            plaintext += chr(value)
+        else:
+            plaintext += ciphertext[i]
+    return plaintext.lower()
 
 
 def autokey_encrypt(plaintext, key):
     key = key.upper()
-    key_length = len(key)
     plaintext = plaintext.upper()
+    full_key = key
     ciphertext = ''
+    for i in range(len(plaintext) - len(key)):
+        full_key += plaintext[i].upper()
+
     key_index = 0
     for char in plaintext:
         if char.isalpha():
-            shift = ord(key[key_index % key_length]) - 65
-            if char.isupper():
-                shift_base = ord('A')
-            else:
-                shift_base = ord('a')
-            value = (shift_base + (ord(char) - shift_base + shift) % 26)
-            ciphertext += chr(value)
+            shift = ord(full_key[key_index]) - ord('A')
+            encrypted_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            ciphertext += encrypted_char
             key_index += 1
-            key += char
         else:
             ciphertext += char
+
     return ciphertext
 
 def autokey_decrypt(ciphertext, key):
     key = key.upper()
-    key_length = len(key)
     ciphertext = ciphertext.upper()
-    plaintext = ""
+    plaintext = ''
     key_index = 0
 
-    for i in range(len(ciphertext)):
-        if ciphertext[i].isalpha():
-            shift = ord(key[key_index % key_length]) - ord('A')
-            decrypted_char = chr((ord(ciphertext[i]) - ord('A') - shift) % 26 + ord('A'))
+    for char in ciphertext:
+        if char.isalpha():
+            shift = ord(key[key_index]) - ord('A')
+            decrypted_char = chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
             plaintext += decrypted_char
-            key += decrypted_char
+            key += decrypted_char  # Tambahkan karakter plaintext yang didekripsi ke kunci
             key_index += 1
         else:
-            plaintext += ciphertext[i]
-    return plaintext
+            plaintext += char
+
+    return plaintext.lower()
